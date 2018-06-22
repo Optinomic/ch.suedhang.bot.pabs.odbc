@@ -35,3 +35,6 @@ __opapp_include(includes/odbc_pabs_ps001.sql)
 
 [data_source_query pabs_stays PABS 0 */12 *]
 __opapp_include(includes/odbc_pabs_pa001.sql)
+
+[data_source_query pabs_history PABS 0 */12 *]
+__opapp_include(includes/odbc_pabs_fh001.sql)
