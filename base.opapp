@@ -1,0 +1,37 @@
+[module]
+id = __opapp_identifier()
+name = PABS - BOT
+short_description = ODBC-Lookup aus PABS.
+version = __opapp_version()
+type = user
+
+[description]
+Diese Applikation dient zur Sammlung von PABS-Daten. Die Daten werden anhand einem PABS-Lookup via ODBC gewonnen und als data_source_query gespeichert.
+
+
+[developer]
+first_name = Beat
+last_name = Ottiger
+github_user = ottigerb
+email = beat@optinomic.com
+company = Optinomic Gmbh
+phone = +41 (0)44 508 26 76
+website = http://www.optinomic.com/
+
+[readme]
+__opapp_include(readme.md)
+
+[template Tables 6 7]
+__opapp_include(lib/polymer/index.m4)
+__opapp_include(elements/view.html)
+
+
+[javascript]
+
+[css]
+
+[data_source_query pabs_patients PABS 0 */12 *]
+__opapp_include(includes/odbc_pabs_ps001.sql)
+
+[data_source_query pabs_stays PABS 0 */12 *]
+__opapp_include(includes/odbc_pabs_pa001.sql)

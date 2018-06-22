@@ -1,0 +1,196 @@
+<link rel="import" href="optinomic-title/optinomic-title.html">
+<link rel="import" href="optinomic-pdfmake/optinomic-pdfmake.html">
+<link rel="import" href="optinomic-elements-helpers/optinomic-indication.html">
+<link rel="import" href="iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="iron-collapse/iron-collapse.html">
+<link rel="import" href="vaadin-grid/vaadin-grid.html">
+<link rel="import" href="vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="vaadin-grid/vaadin-grid-column-group.html">
+<link rel="import" href="paper-toggle-button/paper-toggle-button.html">
+<dom-module id="optinomic-template">
+    <template>
+        <style include="shared-styles">
+         :host {
+            display: block;
+            padding: 6px;
+        }
+
+        vaadin-grid {
+            height: auto;
+        }
+
+        .full_grid {
+            height: 500px;
+            border-left-style: none;
+            border-right-style: none;
+            border-bottom-style: none;
+        }
+
+        .readme_container {
+            background-color: #FAFAFA;
+            border-style: solid;
+            border-color: #EEEEEE;
+            border-width: 1px;
+            border-radius: 3px;
+            padding: 24px;
+        }
+
+        .content_block {
+            margin-top: -48px;
+            margin-bottom: 48px;
+            border-top-color: #BDBDBD;
+            border-top-style: solid;
+            border-top-width: 1px;
+        }
+
+        .scroll_top {
+            text-align: right;
+            cursor: pointer;
+            margin-top: 24px;
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        #download {
+            margin-bottom: 24px;
+            margin-top: 24px;
+        }
+        </style>
+        <div id="top" class="layout horizontal flex">
+            <div class="flex">
+                <optinomic-title h1="[[_d.title]]" h2="[[_d.subtitle]] | [[_kantonsstatistik.headers.length]] Felder von [[_kantonsstatistik.rows.length]] Einträgen." h3="[[_d.small]]"></optinomic-title>
+            </div>
+        </div>
+        <template is="dom-if" if="[[_d.init_done]]">
+            <div id="main_content">
+                <optinomic-indication sign="!" title="Welcome" color="#3F51B5"></optinomic-indication>
+            </div>
+        </template>
+        <template is="dom-if" if="[[!_d.init_done]]">
+            <optinomic-indication sign=":" title="Initialisiere..." color="#3F51B5"></optinomic-indication>
+        </template>
+    </template>
+    <script>
+    Polymer({
+        is: 'optinomic-template',
+
+        properties: {
+            _download: {
+                type: Object,
+                value: false,
+                observer: '_getDataSourceQuerys'
+            },
+            _data_source_queries: {
+                type: Object,
+                statePath: 'apps.current.data.data_source_queries',
+                observer: '_getDataSourceQuerys'
+            },
+        },
+
+        behaviors: [ReduxBehavior, AsyncActionsBehavior, optinomicApp],
+
+
+        // -----------------------------
+        // Functions
+        // -----------------------------
+
+        _init: function() {
+
+            var d = {};
+
+            d.title = "PABS";
+            d.subtitle = "PABS Tables";
+            d.small = "PABS";
+
+
+            d.init_done = true;
+            this.set('_d', d);
+            this._d = d;
+            console.log('INIT _d', this._d);
+
+        },
+
+        _getDataSourceQueryData: function(dsq, direct) {
+
+            Polymer.RenderStatus.afterNextRender(this, function() {
+
+                // console.log('_getDataSourceQueryData', dsq);
+
+                if (direct !== true) {
+                    var parameters = {
+                        "format": "json",
+                        "direct": "True"
+                    };
+                } else {
+                    var parameters = {};
+                };
+
+                var api_url = '/modules/ch.suedhang.bot.poly_ks/data_source_queries/' + dsq.identifier;
+
+                helpers.callAPI('POST', api_url, parameters, {}, function(req) {
+                    if (req.status == 200) {
+
+                        var resp = JSON.parse(req.response);
+                        var dsq_name = '_' + dsq.identifier;
+                        this.set(dsq_name, resp);
+
+                        console.warn('1.) _getDataSourceQueryData => ', resp);
+                    };
+
+                    if (req.status == 201) {
+
+                        var resp = JSON.parse(req.response);
+                        var dsq_name = '_csv_' + dsq.identifier;
+                        this.set(dsq_name, resp.download_url);
+
+                        console.warn('2.) _getDataSourceQueryData Download => ', dsq_name, resp);
+                    };
+
+                }.bind(this));
+
+            });
+
+
+        },
+
+        _getDataSourceQuerys: function() {
+
+            this.debounce('_getDataSourceQuerys', function() {
+                if ((this._data_source_queries !== null) && (this._data_source_queries !== undefined)) {
+                    if (this._data_source_queries.length > 0) {
+                        Polymer.RenderStatus.afterNextRender(this, function() {
+
+                            this._data_source_queries.forEach(function(dsq) {
+                                this._getDataSourceQueryData(dsq, this._download);
+
+                            }.bind(this));
+
+
+                        });
+                    };
+                };
+
+            }, 250);
+
+        },
+
+
+
+
+        // -----------------------------
+        // User-Click Functions
+        // -----------------------------
+
+
+        // -----------------------------
+        // Lifecycle
+        // -----------------------------
+
+
+        ready: function() {
+            this._init();
+        }
+    });
+    </script>
+</dom-module>
