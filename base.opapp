@@ -19,7 +19,7 @@ phone = +41 (0)44 508 26 76
 website = http://www.optinomic.com/
 
 [readme]
-__opapp_include(readme.md)
+__opapp_include(README.md)
 
 [template Tables 6 7]
 __opapp_include(lib/polymer/index.m4)
