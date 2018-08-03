@@ -1,12 +1,12 @@
 [module]
 id = __opapp_identifier()
-name = PABS - BOT
-short_description = ODBC-Lookup aus PABS.
+name = PABS - Connector (BOT)
+short_description = ODBC-Connector for PABS.
 version = __opapp_version()
 type = user
 
 [description]
-Diese Applikation dient zur Sammlung von PABS-Daten. Die Daten werden anhand einem PABS-Lookup via ODBC gewonnen und als data_source_query gespeichert.
+Diese Applikation dient zur Sammlung von PABS-Daten. Die Daten werden anhand einem PABS-Lookup via ODBC (pabsodbc) gewonnen und als data_source_query gespeichert.
 
 
 [developer]
