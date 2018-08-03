@@ -1,7 +1,7 @@
 [module]
 id = __opapp_identifier()
 name = PABS - Connector (BOT)
-short_description = ODBC-Connector for PABS.
+short_description = ODBC-Connector: GET PABS-Data.
 version = __opapp_version()
 type = user
 
@@ -30,11 +30,11 @@ __opapp_include(elements/view.html)
 
 [css]
 
-[data_source_query pabs_patients pabsodbc 0 */12 *]
+[data_source_query pabs_patients PABS 0 */12 *]
 __opapp_include(includes/odbc_pabs_ps001.sql)
 
-[data_source_query pabs_stays pabsodbc 0 */12 *]
+[data_source_query pabs_stays PABS 0 */12 *]
 __opapp_include(includes/odbc_pabs_pa001.sql)
 
-[data_source_query pabs_history pabsodbc 0 */12 *]
+[data_source_query pabs_history PABS 0 */12 *]
 __opapp_include(includes/odbc_pabs_fh001.sql)
