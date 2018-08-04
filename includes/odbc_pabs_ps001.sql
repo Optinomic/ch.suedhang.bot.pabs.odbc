@@ -1,5 +1,5 @@
 SELECT
-  PA001.PSKNR as cis_pid,  
+  PS001.PSKNR as cis_pid,  
   PS001.PSFIR,
   PS001.PSKNR,
   PS001.PSSPR,
